@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Laboratorio 6 Parte 1</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="Lab6P1_files/libs/clipboard/clipboard.min.js"></script>
+<script src="Lab6P1_files/libs/quarto-html/quarto.js"></script>
+<script src="Lab6P1_files/libs/quarto-html/popper.min.js"></script>
+<script src="Lab6P1_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="Lab6P1_files/libs/quarto-html/anchor.min.js"></script>
+<link href="Lab6P1_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="Lab6P1_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="Lab6P1_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="Lab6P1_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="Lab6P1_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Laboratorio 6 Parte 1</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<p>En este laboratorio, estaremos repasando los conceptos de Generative Adversarial Networks En la primera parte nos acercaremos a esta arquitectura a través de buscar aproximar una función. Esta vez ya no usaremos versiones deprecadas de la librería de PyTorch, por ende, creen un nuevo virtual env con las librerías más recientes que puedan por favor.</p>
+<p>Al igual que en laboratorios anteriores, para este laboratorio estaremos usando una herramienta para Jupyter Notebooks que facilitará la calificación, no solo asegurándo que ustedes tengan una nota pronto sino también mostrandoles su nota final al terminar el laboratorio.</p>
+<p>De nuevo me discupo si algo no sale bien, seguiremos mejorando conforme vayamos iterando. Siempre pido su comprensión y colaboración si algo no funciona como debería.</p>
+<p>Al igual que en el laboratorio pasado, estaremos usando la librería de Dr John Williamson et al de la University of Glasgow, además de ciertas piezas de código de Dr Bjorn Jensen de su curso de Introduction to Data Science and System de la University of Glasgow para la visualización de sus calificaciones.</p>
+<p><strong>NOTA:</strong> Ahora tambien hay una tercera dependecia que se necesita instalar. Ver la celda de abajo por favor</p>
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+<div class="cell" data-executetime="{&quot;end_time&quot;:&quot;2023-08-22T01:05:21.225179Z&quot;,&quot;start_time&quot;:&quot;2023-08-22T01:05:21.206664Z&quot;}" data-nbgrader="{&quot;cell_type&quot;:&quot;code&quot;,&quot;checksum&quot;:&quot;15d9e36eb3d6eda1ea8b6ad946164088&quot;,&quot;grade&quot;:false,&quot;grade_id&quot;:&quot;cell-e74d9bdf886d7f55&quot;,&quot;locked&quot;:true,&quot;schema_version&quot;:3,&quot;solution&quot;:false,&quot;task&quot;:false}" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Una vez instalada la librería por favor, recuerden volverla a comentar.</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co">#!pip install -U --force-reinstall --no-cache https://github.com/johnhw/jhwutils/zipball/master</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">#!pip install scikit-image</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co">#!pip install -U --force-reinstall --no-cache https://github.com/AlbertS789/lautils/zipball/master</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-executetime="{&quot;end_time&quot;:&quot;2023-08-22T01:05:22.570235Z&quot;,&quot;start_time&quot;:&quot;2023-08-22T01:05:21.228169Z&quot;}" data-nbgrader="{&quot;cell_type&quot;:&quot;code&quot;,&quot;checksum&quot;:&quot;fe2113ec92b93ee2a5cf1a59377a957f&quot;,&quot;grade&quot;:false,&quot;grade_id&quot;:&quot;cell-6ac4f1ed77427074&quot;,&quot;locked&quot;:true,&quot;schema_version&quot;:3,&quot;solution&quot;:false,&quot;task&quot;:false}" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> copy</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> scipy</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> PIL <span class="im">import</span> Image</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> collections <span class="im">import</span> defaultdict</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co">#from IPython import display</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="co">#from base64 import b64decode</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Other imports</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> unittest.mock <span class="im">import</span> patch</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> uuid <span class="im">import</span> getnode <span class="im">as</span> get_mac</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> jhwutils.checkarr <span class="im">import</span> array_hash, check_hash, check_scalar, check_string, array_hash, _check_scalar</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> jhwutils.image_audio <span class="im">as</span> ia</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> jhwutils.tick <span class="im">as</span> tick</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> lautils.gradeutils <span class="im">import</span> new_representation, hex_to_float, compare_numbers, compare_lists_by_percentage, calculate_coincidences_percentage</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a><span class="co">###</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>tick.reset_marks()</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>matplotlib inline</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-executetime="{&quot;end_time&quot;:&quot;2023-08-22T01:05:22.585673Z&quot;,&quot;start_time&quot;:&quot;2023-08-22T01:05:22.571202Z&quot;}" data-nbgrader="{&quot;cell_type&quot;:&quot;code&quot;,&quot;checksum&quot;:&quot;89fd2e761a928fe72d6940424922ea1b&quot;,&quot;grade&quot;:true,&quot;grade_id&quot;:&quot;cell-390a3083c0cdea85&quot;,&quot;locked&quot;:true,&quot;points&quot;:0,&quot;schema_version&quot;:3,&quot;solution&quot;:false,&quot;task&quot;:false}" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Celda escondida para utlidades necesarias, por favor NO edite esta celda</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="información-del-estudiante-en-dos-variables" class="level6">
+<h6 class="anchored" data-anchor-id="información-del-estudiante-en-dos-variables">Información del estudiante en dos variables</h6>
+<ul>
+<li>carne_1 : un string con su carne (e.g.&nbsp;“12281”), debe ser de al menos 5 caracteres.</li>
+<li>firma_mecanografiada_1: un string con su nombre (e.g.&nbsp;“Albero Suriano”) que se usará para la declaracion que este trabajo es propio (es decir, no hay plagio)</li>
+<li>carne_2 : un string con su carne (e.g.&nbsp;“12281”), debe ser de al menos 5 caracteres.</li>
+<li>firma_mecanografiada_2: un string con su nombre (e.g.&nbsp;“Albero Suriano”) que se usará para la declaracion que este trabajo es propio (es decir, no hay plagio)</li>
+</ul>
+<div class="cell" data-executetime="{&quot;end_time&quot;:&quot;2023-08-22T01:05:22.601669Z&quot;,&quot;start_time&quot;:&quot;2023-08-22T01:05:22.588185Z&quot;}" data-nbgrader="{&quot;cell_type&quot;:&quot;code&quot;,&quot;checksum&quot;:&quot;e1ce0139d077928e2dc046ab0e340177&quot;,&quot;grade&quot;:false,&quot;grade_id&quot;:&quot;cell-359a6f8b5bf8c2b3&quot;,&quot;locked&quot;:false,&quot;schema_version&quot;:3,&quot;solution&quot;:true,&quot;task&quot;:false}" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># carne_1 = </span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co"># firma_mecanografiada_1 = </span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co"># carne_2 = </span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co"># firma_mecanografiada_2 = </span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co"># YOUR CODE HERE</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>carne_1 <span class="op">=</span> <span class="st">"161250"</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>firma_mecanografiada_1 <span class="op">=</span> <span class="st">"Manuel Archila"</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>carne_2 <span class="op">=</span> <span class="st">"161250"</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>firma_mecanografiada_2 <span class="op">=</span> <span class="st">"Manuel Archila"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-executetime="{&quot;end_time&quot;:&quot;2023-08-22T01:05:22.617154Z&quot;,&quot;start_time&quot;:&quot;2023-08-22T01:05:22.604661Z&quot;}" data-nbgrader="{&quot;cell_type&quot;:&quot;code&quot;,&quot;checksum&quot;:&quot;02cc459a081d0939998dc1d0de1ff8d1&quot;,&quot;grade&quot;:true,&quot;grade_id&quot;:&quot;cell-0f320f6e0f897f6c&quot;,&quot;locked&quot;:true,&quot;points&quot;:0,&quot;schema_version&quot;:3,&quot;solution&quot;:false,&quot;task&quot;:false}" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Deberia poder ver dos checkmarks verdes [0 marks], que indican que su información básica está OK </span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> tick.marks(<span class="dv">0</span>): </span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span>(<span class="bu">len</span>(carne_1)<span class="op">&gt;=</span><span class="dv">5</span> <span class="kw">and</span> <span class="bu">len</span>(carne_2)<span class="op">&gt;=</span><span class="dv">5</span>)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> tick.marks(<span class="dv">0</span>):  </span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span>(<span class="bu">len</span>(firma_mecanografiada_1)<span class="op">&gt;</span><span class="dv">0</span> <span class="kw">and</span> <span class="bu">len</span>(firma_mecanografiada_2)<span class="op">&gt;</span><span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+
+        <div class="alert alert-box alert-success">
+        <h1> <!--{id:"CORRECTMARK", marks:"0"}--> 
+         ✓ [0 marks] 
+         </h1> </div>
+</div>
+<div class="cell-output cell-output-display">
+
+        <div class="alert alert-box alert-success">
+        <h1> <!--{id:"CORRECTMARK", marks:"0"}--> 
+         ✓ [0 marks] 
+         </h1> </div>
+</div>
+</div>
+</section>
+<section id="introducción" class="level3">
+<h3 class="anchored" data-anchor-id="introducción">Introducción</h3>
+<p><strong>Créditos:</strong> Esta parte de este laboratorio está tomado y basado en uno de los blogs de Renato Candido, así como las imagenes presentadas en este laboratorio a menos que se indique lo contrario.</p>
+<p>Los Generative Adversarial Networks representan sistemas de aprendizaje automático capaces de aprender a imitar una distribución específica de datos. Estos fueron propuestos por primera vez en un artículo de NeurIPS en 2014 por Ian Goodfellow, un experto en el campo del aprendizaje profundo, y sus colegas.</p>
+<p>Las GAN consisten en dos redes neuronales, una de las cuales se entrena para generar datos, mientras que la otra se entrena para discernir entre datos falsos y auténticos (de ahí proviene la naturaleza “adversarial” del modelo). Aunque la noción de una estructura destinada a la generación de datos no es novedosa, en lo que respecta a la creación de imágenes y videos, las GAN han arrojado resultados sorprendentes,</p>
+<p>Architecturas que producen datos, como las GAN, se clasifican como modelos generativos en contraste con los modelos discriminatorios, que son más ampliamente estudiados. Antes de adentrarnos en las GAN, exploraremos las diferencias entre estos dos tipos de modelos.</p>
+<p>La mayoría de las aplicaciones con las que te hemos trabajado hasta ahora han sido implementaciones usando modelos discriminatorios. Por otro lado, las redes generativas adversarias pertenecen a una categoría diferente de modelos conocidos como modelos generativos.</p>
+<p>Los modelos discriminatorios son aquellos que se utilizan para la mayoría de los problemas de clasificación o regresión supervisada. Como ejemplo de un problema de clasificación, supongamos que deseamos entrenar un modelo para clasificar imágenes de dígitos escritos a mano del 0 al 9 (un ejemplo bastante común). Para esto, podríamos usar un conjunto de datos etiquetado que contenga imágenes de dígitos escritos a mano y sus etiquetas asociadas que indican qué dígito representa cada imagen.</p>
+<p>Durante el proceso de entrenamiento, utilizaríamos un algoritmo para ajustar los parámetros del modelo. El objetivo sería minimizar una función de pérdida para que el modelo aprenda la <strong>distribución de probabilidad</strong> de la salida dada la entrada. Después de la fase de entrenamiento, podríamos utilizar el modelo para clasificar una nueva imagen de un dígito escrito a mano estimando el dígito más probable al que corresponde la entrada según lo aprendindo durante la fase de entrenamiento.</p>
+<p><img src="https://files.realpython.com/media/fig_discriminative.9c22a1cd877d.png" class="img-fluid"></p>
+<p>Los modelos discriminativos para problemas de clasificación pueden ser visualizados como bloques que utilizan los datos de entrenamiento para aprender los límites entre las clases. Luego, utilizan estos límites para discriminar una entrada y predecir su clase. En términos matemáticos, los modelos discriminativos aprenden la probabilidad condicional P(y|x) de la salida “y” dada la entrada “x”.</p>
+<p>Además de las redes neuronales, otras estructuras pueden ser utilizadas como modelos discriminativos, como modelos de regresión logística y máquinas de soporte vectorial (SVM).</p>
+<p>Por otro lado, los modelos generativos como las GANs se entrenan para describir cómo se genera un conjunto de datos en términos de un modelo probabilístico. Al muestrear de un modelo generativo, podemos generar nuevos datos. Mientras que los modelos discriminativos se utilizan para el aprendizaje supervisado, los modelos generativos a menudo se emplean con conjuntos de datos no etiquetados y pueden considerarse como una forma de aprendizaje no supervisado.</p>
+<p>Utilizando el conjunto de datos de dígitos escritos a mano, podríamos entrenar un modelo generativo para generar nuevos dígitos. Durante la fase de entrenamiento, utilizaríamos algún algoritmo para ajustar los parámetros del modelo y minimizar una función de pérdida para aprender la distribución de probabilidad del conjunto de entrenamiento. Luego, con el modelo entrenado, podríamos generar nuevas muestras.</p>
+<p><img src="https://files.realpython.com/media/fig_generative.5f01c08f5208.png" class="img-fluid"></p>
+<p>Para producir nuevas muestras, los modelos generativos suelen incorporar un elemento <strong>estocástico</strong> o aleatorio que influye en las muestras generadas por el modelo. Las muestras aleatorias utilizadas para impulsar el generador se obtienen de un <strong>espacio latente</strong> en el que los vectores representan una especie de forma comprimida de las muestras generadas.</p>
+<p>A diferencia de los modelos discriminativos, los modelos generativos aprenden la probabilidad P(x) de los datos de entrada “x”, y al tener la distribución de los datos de entrada, pueden generar nuevas instancias de datos.</p>
+<p>Vale la pena mencionar que los modelos generativos también pueden ser utilizados con conjuntos de datos etiquetados. Cuando lo son, se entrenan para aprender la probabilidad P(x|y) de la entrada “x” dado el resultado “y”. También pueden ser utilizados para tareas de clasificación, pero en general, los modelos discriminativos tienen un mejor rendimiento en lo que respecta a la clasificación.</p>
+</section>
+<section id="sobre-la-arquitectura" class="level3">
+<h3 class="anchored" data-anchor-id="sobre-la-arquitectura">Sobre la Arquitectura</h3>
+<p>Las redes Generativas Adversarias están compuestas por una estructura global que consta de dos redes neuronales, una llamada generador y otra llamada discriminador.</p>
+<p>El papel del generador es estimar la distribución de probabilidad de las muestras reales para proporcionar muestras generadas que se asemejen a datos reales. El discriminador, a su vez, se entrena para estimar la probabilidad de que una muestra dada provenga de los datos reales en lugar de ser proporcionada por el generador.</p>
+<p>Estas estructuras se llaman redes generativas adversarias porque el generador y el discriminador se entrenan para competir entre sí: el generador intenta mejorar engañando al discriminador, mientras que el discriminador intenta mejorar identificando muestras generadas.</p>
+<p>Para comprender cómo funciona el entrenamiento de las GAN, vamos a considerar un ejemplo sencillo con un conjunto de datos compuesto por muestras bidimensionales (x₁, x₂), donde x₁ está en el intervalo de 0 a 2π y x₂ = sin(x₁). Una función que se puede visualizar como la siguiente imagen:</p>
+<p><img src="https://files.realpython.com/media/fig_x1x2.f8a39d8ff58a.png" class="img-fluid"></p>
+<p>Como se puede ver, este conjunto de datos consiste en puntos (x₁, x₂) ubicados sobre una curva senoidal, que tiene una distribución muy particular. La estructura general de una GAN para generar pares (x̃₁, x̃₂) que se asemejen a las muestras del conjunto de datos se muestra en la siguiente figura:</p>
+<p><img src="https://files.realpython.com/media/fig_gan.4f0f744c7999.png" class="img-fluid"></p>
+<p>El generador G recibe datos aleatorios de un espacio latente, y su función es generar datos que se parezcan a las muestras reales. En este ejemplo, se tiene un espacio latente bidimensional, de manera que el generador recibe pares aleatorios (z₁, z₂) y debe transformarlos de manera que se asemejen a las muestras reales.</p>
+<p>La estructura de la red neuronal G puede ser arbitraria, lo que te permite utilizar redes neuronales como multi-layer perceptron (MLP), redes neuronales convolucionales (CNN) o cualquier otra estructura, <strong>siempre que las dimensiones de la entrada y la salida coincidan con las dimensiones del espacio latente y los datos reales.</strong></p>
+<p>El discriminador D recibe muestras reales del conjunto de datos de entrenamiento o muestras generadas proporcionadas por G. Su función es estimar la probabilidad de que la entrada pertenezca al conjunto de datos reales. El entrenamiento se realiza de manera que D emita un 1 cuando se le proporciona una muestra real y un 0 cuando se le proporciona una muestra generada.</p>
+<p>Al igual que con G, se puede elegir una estructura de red neuronal arbitraria para D, siempre que respete las dimensiones necesarias de entrada y salida. En esta primera parte, la entrada es bidimensional. Para un discriminador binario, la salida puede ser un escalar que varía entre 0 y 1.</p>
+<p>El proceso de entrenamiento de GAN consiste en un juego minimax (¿les suena o recuerdan este concepto?) de dos jugadores en el que D se adapta para minimizar el error de discriminación entre muestras reales y generadas, y G se adapta para maximizar la probabilidad de que D cometa un error.</p>
+<p>Aunque el conjunto de datos que contiene los datos reales no está etiquetado, los procesos de entrenamiento para D y G se realizan de manera supervisada. En cada paso del entrenamiento, los parámetros de D y G se actualizan. De hecho, en la propuesta original de las GAN, los parámetros de D se actualizan k veces, mientras que los parámetros de G se actualizan solo una vez en cada paso de entrenamiento. Sin embargo, para simplificar el entrenamiento, se puede considerar k igual a 1.</p>
+<p>Para entrenar a D, en cada iteración se etiquetan algunas muestras reales tomadas de los datos de entrenamiento como 1 y algunas muestras generadas proporcionadas por G como 0. De esta manera, puedes utilizar un marco de entrenamiento supervisado convencional para actualizar los parámetros de D con el fin de minimizar una función de pérdida, como se muestra en el siguiente esquema:</p>
+<p><img src="https://files.realpython.com/media/fig_train_discriminator.cd1a1e32764f.png" class="img-fluid"></p>
+<p>Para cada batch de datos de entrenamiento que contiene muestras reales y generadas, se actualizan los parámetros de D para minimizar una función de pérdida. Después de actualizar los parámetros de D, se entrena a G para producir mejores muestras generadas. La salida de G está conectada a D, cuyos parámetros se mantienen congelados, como se muestra aquí:</p>
+<p><img src="https://files.realpython.com/media/fig_train_generator.7196c4f382ba.png" class="img-fluid"></p>
+<p>Se puede imaginar el sistema compuesto por G y D como un sistema de clasificación único que recibe muestras aleatorias como entrada y produce la clasificación, que en este caso puede interpretarse como una probabilidad.</p>
+<p>Cuando G hace un trabajo lo suficientemente bueno como para engañar a D, la probabilidad de salida debería estar cerca de 1. También se podría utilizar un framework de entrenamiento supervisado convencional aquí: el conjunto de datos para entrenar el sistema de clasificación compuesto por G y D sería proporcionado por muestras de entrada aleatorias, y la etiqueta asociada con cada muestra de entrada sería 1.</p>
+<p>Durante el entrenamiento, a medida que se actualizan los parámetros de D y G, se espera que las muestras generadas proporcionadas por G se parezcan más a los datos reales, y que D tenga más dificultades para distinguir entre datos reales y generados.</p>
+<p>Ahora sí, después de tan largo preambulo, empecemos a trabajar sobre nuestra primera GAN</p>
+<div class="cell" data-executetime="{&quot;end_time&quot;:&quot;2023-08-22T01:05:23.804126Z&quot;,&quot;start_time&quot;:&quot;2023-08-22T01:05:22.618151Z&quot;}" data-nbgrader="{&quot;cell_type&quot;:&quot;code&quot;,&quot;checksum&quot;:&quot;55a8192dbeafddfd102461188fc6fc31&quot;,&quot;grade&quot;:false,&quot;grade_id&quot;:&quot;cell-342bf17cb8fdb5a7&quot;,&quot;locked&quot;:true,&quot;schema_version&quot;:3,&quot;solution&quot;:false,&quot;task&quot;:false}" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> torch <span class="im">import</span> nn</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> random</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> math</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-executetime="{&quot;end_time&quot;:&quot;2023-08-22T01:05:23.819134Z&quot;,&quot;start_time&quot;:&quot;2023-08-22T01:05:23.805123Z&quot;}" data-nbgrader="{&quot;cell_type&quot;:&quot;code&quot;,&quot;checksum&quot;:&quot;c5123929b3ebbd3953cd58f7c91e0c75&quot;,&quot;grade&quot;:false,&quot;grade_id&quot;:&quot;cell-e4daee81985d03d2&quot;,&quot;locked&quot;:true,&quot;schema_version&quot;:3,&quot;solution&quot;:false,&quot;task&quot;:false}" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>seed_ <span class="op">=</span> <span class="dv">2023</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>random.seed(seed_)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>np.random.seed(seed_)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>torch.manual_seed(seed_)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>torch.cuda.manual_seed(seed_)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co">#torch.backends.cudnn.deterministic = True</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="data-de-entrenamiento" class="level3">
+<h3 class="anchored" data-anchor-id="data-de-entrenamiento">Data de Entrenamiento</h3>
+<p>Los datos de entrenamiento están compuestos por pares (x₁, x₂) de manera que x₂ consiste en el valor del seno de x₁, donde x₁ está en el intervalo de 0 a 2π.</p>
+<p>Aquí, se compone un conjunto de entrenamiento con 1024 pares (x₁, x₂). Luego, se inicializa train_data, un tensor con dimensiones de 1024 filas y 2 columnas, todos conteniendo ceros. Un tensor es un arreglo multidimensional similar a un arreglo NumPy.</p>
+<p>Después, se utiliza la primera columna de train_data para almacenar valores aleatorios en el intervalo de 0 a 2π. Luego, se calcula la segunda columna del tensor como el seno de la primera columna.</p>
+<p>Luego, se necesitará un tensor de etiquetas, que son necesarias para el loader de datos de PyTorch. Dado que las GAN hacen uso de técnicas de aprendizaje no supervisado, las etiquetas pueden ser cualquier cosa. Después de todo, no se utilizarán.</p>
+<p>Luego, se crea train_labels, un tensor lleno de ceros. Finalmente, se crea train_set como una lista de tuplas, donde cada fila de train_data y train_labels está representada en cada tupla como se espera para el cargador de datos de PyTorch.</p>
+<p>Más adelante, con train_set se crea el data loader.</p>
+<p>Despues, se crea un data loader llamado train_loader, que mezclará los datos de train_set y devolverá batches de 32 muestras que se utilizarán para entrenar las redes neuronales.</p>
+<p>Después de configurar los datos de entrenamiento, se necesita crear las redes neuronales para el discriminador y el generador que compondrán la GAN.</p>
+<div class="cell" data-executetime="{&quot;end_time&quot;:&quot;2023-08-22T01:05:23.834960Z&quot;,&quot;start_time&quot;:&quot;2023-08-22T01:05:23.821470Z&quot;}" data-nbgrader="{&quot;cell_type&quot;:&quot;code&quot;,&quot;checksum&quot;:&quot;a037bc9ddfc4fd9471599a75b5662d34&quot;,&quot;grade&quot;:false,&quot;grade_id&quot;:&quot;cell-e4b84d4f789184fa&quot;,&quot;locked&quot;:false,&quot;schema_version&quot;:3,&quot;solution&quot;:true,&quot;task&quot;:false}" data-execution_count="11">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>train_data_length <span class="op">=</span> <span class="dv">1024</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Aprox 1 linea para</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co"># train_data =</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Hint: Puede necesitar torch.zeros</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co"># YOUR CODE HERE</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>train_data <span class="op">=</span> torch.zeros(train_data_length, <span class="dv">2</span>)</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>train_data[:, <span class="dv">0</span>] <span class="op">=</span> <span class="dv">2</span> <span class="op">*</span> math.pi <span class="op">*</span> torch.rand(train_data_length)</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>train_data[:, <span class="dv">1</span>] <span class="op">=</span> torch.sin(train_data[:, <span class="dv">0</span>])</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>train_labels <span class="op">=</span> torch.zeros(train_data_length)</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Aprox 1 linea para</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="co"># train_set = </span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Hint: Recuerde que esta debe ser una lista de tuplas</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="co"># YOUR CODE HERE</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>train_set <span class="op">=</span> [(train_data[i], train_labels[i]) <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(train_data_length)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-executetime="{&quot;end_time&quot;:&quot;2023-08-22T01:05:23.850329Z&quot;,&quot;start_time&quot;:&quot;2023-08-22T01:05:23.836955Z&quot;}" data-nbgrader="{&quot;cell_type&quot;:&quot;code&quot;,&quot;checksum&quot;:&quot;6ef4c1462ad7a3f86ea1a96203c5e13b&quot;,&quot;grade&quot;:false,&quot;grade_id&quot;:&quot;cell-a274f1c593cb647b&quot;,&quot;locked&quot;:true,&quot;schema_version&quot;:3,&quot;solution&quot;:false,&quot;task&quot;:false}" data-execution_count="12">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>batch_size <span class="op">=</span> <span class="dv">32</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>train_loader <span class="op">=</span> torch.utils.data.DataLoader(</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    train_set, batch_size<span class="op">=</span>batch_size, shuffle<span class="op">=</span><span class="va">True</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="implementando-el-discriminador" class="level3">
+<h3 class="anchored" data-anchor-id="implementando-el-discriminador">Implementando el Discriminador</h3>
+<p>En PyTorch, como bien hemos visto hasta ahora, los modelos de redes neuronales se representan mediante clases que heredan de nn.Module, por lo que se deberá definir una clase para crear el discriminador.</p>
+<p>El discriminador es un modelo con una entrada bidimensional y una salida unidimensional. Se recibirá una muestra de los datos reales o del generador y se proporcionará la probabilidad de que la muestra pertenezca a los datos de entrenamiento reales.</p>
+<p>Se utiliza .init() para construir el modelo. En primer lugar, es necesario llamar a super().init() para ejecutar .init() de nn.Module. El discriminador que se está utilizando es una red neuronal MLP definida de manera secuencial utilizando nn.Sequential(). Tiene las siguientes características:</p>
+<ul>
+<li><p>La entrada es bidimensional y la primera capa oculta está compuesta por 256 neuronas con activación ReLU.</p></li>
+<li><p>La segunda y tercera capas ocultas están compuestas por 128 y 64 neuronas, respectivamente, con activación ReLU.</p></li>
+<li><p>La salida está compuesta por una única neurona con activación sigmoide para representar una probabilidad.</p></li>
+<li><p>Después de la primera, segunda y tercera capas ocultas, se utiliza dropout para evitar el sobreajuste.</p></li>
+</ul>
+<p>Finalmente, se utiliza .forward() para describir cómo se calcula la salida del modelo. Aquí, “x” representa la entrada del modelo, que es un tensor bidimensional. En esta implementación, la salida se obtiene alimentando la entrada x al modelo que se ha definido sin ningún otro procesamiento.</p>
+<p>El discriminador representa una instancia de la red neuronal que se ha definido y está listo para ser entrenado. Sin embargo, antes de implementar el ciclo de entrenamiento, la GAN también necesita un generador.</p>
+<div class="cell" data-executetime="{&quot;end_time&quot;:&quot;2023-08-22T01:05:23.865336Z&quot;,&quot;start_time&quot;:&quot;2023-08-22T01:05:23.852325Z&quot;}" data-nbgrader="{&quot;cell_type&quot;:&quot;code&quot;,&quot;checksum&quot;:&quot;d5ba304e71ece7d70910c50c1ccb0c78&quot;,&quot;grade&quot;:false,&quot;grade_id&quot;:&quot;cell-520ed8d07dcaf1c4&quot;,&quot;locked&quot;:false,&quot;schema_version&quot;:3,&quot;solution&quot;:true,&quot;task&quot;:false}" data-execution_count="13">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Discriminator(nn.Module):</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>):</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>()</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.model <span class="op">=</span> nn.Sequential(</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Aprox 3 lineas</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Capa linea e entrada 2 y salida 256</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Activacion ReLU</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Dropout con probabilidad 30%</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Nota: recuerden usar comas al final</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>            <span class="co"># YOUR CODE HERE</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>            nn.Linear(<span class="dv">2</span>, <span class="dv">256</span>),</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>            nn.ReLU(),</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>            nn.Dropout(<span class="fl">0.3</span>),</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>            nn.Linear(<span class="dv">256</span>, <span class="dv">128</span>),</span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>            nn.ReLU(),</span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>            nn.Dropout(<span class="fl">0.3</span>),</span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>            nn.Linear(<span class="dv">128</span>, <span class="dv">64</span>),</span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>            nn.ReLU(),</span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Aprox 3 lineas para</span></span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Dropout de 30%</span></span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Lineal de entrada que haga match y salida 1</span></span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Sigmoide</span></span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>            <span class="co"># YOUR CODE HERE</span></span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>            nn.Dropout(<span class="fl">0.3</span>),</span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a>            nn.Linear(<span class="dv">64</span>, <span class="dv">1</span>),</span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a>            nn.Sigmoid()</span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> forward(<span class="va">self</span>, x):</span>
+<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a>        output <span class="op">=</span> <span class="va">self</span>.model(x)</span>
+<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> output</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-executetime="{&quot;end_time&quot;:&quot;2023-08-22T01:05:23.881338Z&quot;,&quot;start_time&quot;:&quot;2023-08-22T01:05:23.866335Z&quot;}" data-nbgrader="{&quot;cell_type&quot;:&quot;code&quot;,&quot;checksum&quot;:&quot;0d54b7237531498b39d119c908b85bf1&quot;,&quot;grade&quot;:false,&quot;grade_id&quot;:&quot;cell-d231beb0bf3a97c2&quot;,&quot;locked&quot;:true,&quot;schema_version&quot;:3,&quot;solution&quot;:false,&quot;task&quot;:false}" data-execution_count="14">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>discriminator <span class="op">=</span> Discriminator()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="implementando-el-generador" class="level3">
+<h3 class="anchored" data-anchor-id="implementando-el-generador">Implementando el Generador</h3>
+<p>En las GANs, el generador es el modelo que toma muestras de un espacio latente como entrada y genera datos que se asemejan a los datos del conjunto de entrenamiento. En este caso, es un modelo con una entrada bidimensional, que recibirá puntos aleatorios (z₁, z₂), y una salida bidimensional que debe proporcionar puntos (x̃₁, x̃₂) que se parezcan a los del conjunto de datos de entrenamiento.</p>
+<p>La implementación es similar a lo que se hizo para el discriminador. En primer lugar, se debe crear una clase Generador que herede de nn.Module, definiendo la arquitectura de la red neuronal, y luego se necesita instanciar un objeto Generador:</p>
+<p>El generador representa la red neuronal generadora. Está compuesto por dos capas ocultas con 16 y 32 neuronas, ambas con activación ReLU, y una capa de activación lineal con 2 neuronas en la salida. De esta manera, la salida consistirá en un vector con dos elementos que pueden ser cualquier valor que varíe desde menos infinito hasta infinito, lo que representará (x̃₁, x̃₂).</p>
+<div class="cell" data-executetime="{&quot;end_time&quot;:&quot;2023-08-22T01:05:23.897912Z&quot;,&quot;start_time&quot;:&quot;2023-08-22T01:05:23.883333Z&quot;}" data-nbgrader="{&quot;cell_type&quot;:&quot;code&quot;,&quot;checksum&quot;:&quot;8a986c3b286afc722eb1496160cf8753&quot;,&quot;grade&quot;:false,&quot;grade_id&quot;:&quot;cell-fbe58b897da39442&quot;,&quot;locked&quot;:false,&quot;schema_version&quot;:3,&quot;solution&quot;:true,&quot;task&quot;:false}" data-execution_count="15">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Generator(nn.Module):</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>):</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>()</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.model <span class="op">=</span> nn.Sequential(</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Aprox 4 lineas para</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Lineal de 2 a 16</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Activación ReLU</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Lineal de 16 a 32</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Activación RelU</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>            <span class="co"># YOUR CODE HERE</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>            nn.Linear(<span class="dv">2</span>, <span class="dv">16</span>),</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>            nn.ReLU(),</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>            nn.Linear(<span class="dv">16</span>, <span class="dv">32</span>),</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>            nn.ReLU(),</span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>            nn.Linear(<span class="dv">32</span>, <span class="dv">2</span>),</span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> forward(<span class="va">self</span>, x):</span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>        output <span class="op">=</span> <span class="va">self</span>.model(x)</span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> output</span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>generator <span class="op">=</span> Generator()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="entrenando-el-modelo" class="level3">
+<h3 class="anchored" data-anchor-id="entrenando-el-modelo">Entrenando el Modelo</h3>
+<p>Primero se deben configurar algunos parámetros como siempre lo hemos hecho:</p>
+<ul>
+<li><p>La tasa de aprendizaje (lr): Se utilizará para adaptar los pesos de la red.</p></li>
+<li><p>Número de épocas (num_epochs): Define cuántas repeticiones de entrenamiento utilizando todo el conjunto de entrenamiento se llevarán a cabo.</p></li>
+<li><p>loss_function a la función de pérdida de entropía cruzada binaria BCELoss(), que es la función de pérdida que se utilizará para entrenar los modelos.</p></li>
+</ul>
+<p>La función de pérdida de entropía cruzada binaria es adecuada para entrenar el discriminador porque considera una tarea de clasificación binaria. También es adecuada para entrenar el generador, ya que alimenta su salida al discriminador, que proporciona una salida binaria observable.</p>
+<p>PyTorch implementa varias reglas de actualización de pesos para el entrenamiento de modelos en torch.optim. Se utilizará el algoritmo Adam para entrenar los modelos del discriminador y del generador. Para crear los optimizadores utilizando torch.optim.</p>
+<p>Después, se debe implementar un ciclo de entrenamiento en el que las muestras de entrenamiento se alimenten a los modelos y se actualicen sus pesos para minimizar la función de pérdida:</p>
+<p>En las GAN, se actualizan los parámetros del discriminador y del generador en cada iteración de entrenamiento. Como generalmente se hace para todas las redes neuronales, el proceso de entrenamiento consiste en dos ciclos, uno para las épocas de entrenamiento y otro para los batch de cada época. Dentro del ciclo interno, se comienza a preparar los datos para entrenar el discriminador. Los pasos a seguir deben ser:</p>
+<ul>
+<li><p>Se obtienen las muestras reales del batch actual del cargador de datos y se asignan a real_samples. Observen que la primera dimensión del tensor tiene el número de elementos igual a batch_size. Esta es la forma estándar de organizar los datos en PyTorch, donde cada línea del tensor representa una muestra del batch.</p></li>
+<li><p>Se utiliza torch.ones() para crear etiquetas con el valor 1 para las muestras reales, y luego se asignan las etiquetas a real_samples_labels.</p></li>
+<li><p>Se crean las muestras generadas almacenando datos aleatorios en latent_space_samples, que luego se alimentan al generador para obtener generated_samples.</p></li>
+<li><p>Se utiliza torch.zeros() para asignar el valor 0 a las etiquetas para las muestras generadas, y luego se almacenan las etiquetas en generated_samples_labels.</p></li>
+<li><p>Se concatenan las muestras reales y generadas y las etiquetas, y se almacenan en all_samples y all_samples_labels, que se utilizarán para entrenar el discriminador.</p></li>
+</ul>
+<p>Después se entrena el discriminador siguiendo estos pasos:</p>
+<ul>
+<li><p>Es necesario borrar los gradientes en cada paso de entrenamiento para evitar acumularlos. Esto se hace utilizando .zero_grad().</p></li>
+<li><p>Se calcula la salida del discriminador utilizando los datos de entrenamiento en all_samples.</p></li>
+<li><p>Se calcula la función de pérdida utilizando la salida del modelo en output_discriminator y las etiquetas en all_samples_labels.</p></li>
+<li><p>Se calculan los gradientes para actualizar los pesos con loss_discriminator.backward().</p></li>
+<li><p>Se actualizan los pesos del discriminador llamando a optimizer_discriminator.step().</p></li>
+</ul>
+<p>A continuación, se preparan los datos para entrenar el generador. Se almacenan datos aleatorios en latent_space_samples, con un número de líneas igual a batch_size. Se utilizan dos columnas ya que se proporcionan datos bidimensionales como entrada al generador.</p>
+<p>Se entrena el generador de la siguiente manera:</p>
+<ul>
+<li><p>Se borran los gradientes con .zero_grad().</p></li>
+<li><p>Se alimenta el generador con latent_space_samples y se almacena su salida en generated_samples.</p></li>
+<li><p>Se alimenta la salida del generador al discriminador y se almacena su salida en output_discriminator_generated, que se utilizará como la salida del modelo completo.</p></li>
+<li><p>Se calcula la función de pérdida utilizando la salida del sistema de clasificación almacenada en output_discriminator_generated y las etiquetas en real_samples_labels, que son todas iguales a 1.</p></li>
+<li><p>Se calculan los gradientes y se actualizan los pesos del generador. Recuerda que cuando entrenaste el generador, mantuviste los pesos del discriminador congelados ya que creaste optimizer_generator con su primer argumento igual a generator.parameters().</p></li>
+<li><p>Se muestran los valores de las funciones de pérdida del discriminador y del generador al final de cada diez épocas.</p></li>
+</ul>
+<p>Dado que los modelos utilizados en este ejemplo tienen pocos parámetros, el entrenamiento se completará en pocos minutos. Más adelante, se utilizará la GAN entrenada para generar algunas muestras.</p>
+<div class="cell" data-executetime="{&quot;end_time&quot;:&quot;2023-08-22T01:05:46.120167Z&quot;,&quot;start_time&quot;:&quot;2023-08-22T01:05:23.899960Z&quot;}" data-nbgrader="{&quot;cell_type&quot;:&quot;code&quot;,&quot;checksum&quot;:&quot;5815eeb4598e64dc1cdd03fe3e99507c&quot;,&quot;grade&quot;:false,&quot;grade_id&quot;:&quot;cell-5185aa0971c6e2d2&quot;,&quot;locked&quot;:false,&quot;schema_version&quot;:3,&quot;solution&quot;:true,&quot;task&quot;:false}" data-execution_count="16">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>list_images <span class="op">=</span> []</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Aprox 1 linea para que decidan donde guardar un set de imagen que vamos a generar de las graficas</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="co"># path_imgs =</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="co"># YOUR CODE HERE</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>path_imgs <span class="op">=</span> <span class="st">"./imgs/"</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>random.seed(seed_)</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>np.random.seed(seed_)</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>torch.manual_seed(seed_)</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>torch.cuda.manual_seed(seed_)</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>lr <span class="op">=</span> <span class="fl">0.001</span></span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>num_epochs <span class="op">=</span> <span class="dv">100</span></span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>loss_function <span class="op">=</span> nn.BCELoss()</span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>optimizer_discriminator <span class="op">=</span> torch.optim.Adam(discriminator.parameters(), lr<span class="op">=</span>lr)</span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>optimizer_generator <span class="op">=</span> torch.optim.Adam(generator.parameters(), lr<span class="op">=</span>lr)</span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> epoch <span class="kw">in</span> <span class="bu">range</span>(num_epochs):</span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> n, (real_samples, _) <span class="kw">in</span> <span class="bu">enumerate</span>(train_loader):</span>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Data for training the discriminator</span></span>
+<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a>        real_samples_labels <span class="op">=</span> torch.ones((batch_size, <span class="dv">1</span>))</span>
+<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a>        latent_space_samples <span class="op">=</span> torch.randn((batch_size, <span class="dv">2</span>))</span>
+<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a>        generated_samples <span class="op">=</span> generator(latent_space_samples)</span>
+<span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a>        generated_samples_labels <span class="op">=</span> torch.zeros((batch_size, <span class="dv">1</span>))</span>
+<span id="cb13-27"><a href="#cb13-27" aria-hidden="true" tabindex="-1"></a>        all_samples <span class="op">=</span> torch.cat((real_samples, generated_samples))</span>
+<span id="cb13-28"><a href="#cb13-28" aria-hidden="true" tabindex="-1"></a>        all_samples_labels <span class="op">=</span> torch.cat(</span>
+<span id="cb13-29"><a href="#cb13-29" aria-hidden="true" tabindex="-1"></a>            (real_samples_labels, generated_samples_labels)</span>
+<span id="cb13-30"><a href="#cb13-30" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb13-31"><a href="#cb13-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-32"><a href="#cb13-32" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Training the discriminator</span></span>
+<span id="cb13-33"><a href="#cb13-33" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Aprox 2 lineas para</span></span>
+<span id="cb13-34"><a href="#cb13-34" aria-hidden="true" tabindex="-1"></a>        <span class="co"># setear el discriminador en zero_grad</span></span>
+<span id="cb13-35"><a href="#cb13-35" aria-hidden="true" tabindex="-1"></a>        <span class="co"># output_discriminator =</span></span>
+<span id="cb13-36"><a href="#cb13-36" aria-hidden="true" tabindex="-1"></a>        <span class="co"># YOUR CODE HERE</span></span>
+<span id="cb13-37"><a href="#cb13-37" aria-hidden="true" tabindex="-1"></a>        discriminator.zero_grad()</span>
+<span id="cb13-38"><a href="#cb13-38" aria-hidden="true" tabindex="-1"></a>        output_discriminator <span class="op">=</span> discriminator(all_samples)</span>
+<span id="cb13-39"><a href="#cb13-39" aria-hidden="true" tabindex="-1"></a>        loss_discriminator <span class="op">=</span> loss_function(</span>
+<span id="cb13-40"><a href="#cb13-40" aria-hidden="true" tabindex="-1"></a>            output_discriminator, all_samples_labels)</span>
+<span id="cb13-41"><a href="#cb13-41" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Aprox dos lineas para</span></span>
+<span id="cb13-42"><a href="#cb13-42" aria-hidden="true" tabindex="-1"></a>        <span class="co"># llamar al paso backward sobre el loss_discriminator</span></span>
+<span id="cb13-43"><a href="#cb13-43" aria-hidden="true" tabindex="-1"></a>        <span class="co"># llamar al optimizador sobre optimizer_discriminator</span></span>
+<span id="cb13-44"><a href="#cb13-44" aria-hidden="true" tabindex="-1"></a>        <span class="co"># YOUR CODE HERE</span></span>
+<span id="cb13-45"><a href="#cb13-45" aria-hidden="true" tabindex="-1"></a>        loss_discriminator.backward()</span>
+<span id="cb13-46"><a href="#cb13-46" aria-hidden="true" tabindex="-1"></a>        optimizer_discriminator.step()</span>
+<span id="cb13-47"><a href="#cb13-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-48"><a href="#cb13-48" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Data for training the generator</span></span>
+<span id="cb13-49"><a href="#cb13-49" aria-hidden="true" tabindex="-1"></a>        latent_space_samples <span class="op">=</span> torch.randn((batch_size, <span class="dv">2</span>))</span>
+<span id="cb13-50"><a href="#cb13-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-51"><a href="#cb13-51" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Training the generator</span></span>
+<span id="cb13-52"><a href="#cb13-52" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Aprox 2 lineas para</span></span>
+<span id="cb13-53"><a href="#cb13-53" aria-hidden="true" tabindex="-1"></a>        <span class="co"># setear el generador en zero_grad</span></span>
+<span id="cb13-54"><a href="#cb13-54" aria-hidden="true" tabindex="-1"></a>        <span class="co"># output_discriminator =</span></span>
+<span id="cb13-55"><a href="#cb13-55" aria-hidden="true" tabindex="-1"></a>        <span class="co"># YOUR CODE HERE</span></span>
+<span id="cb13-56"><a href="#cb13-56" aria-hidden="true" tabindex="-1"></a>        generator.zero_grad()</span>
+<span id="cb13-57"><a href="#cb13-57" aria-hidden="true" tabindex="-1"></a>        generated_samples <span class="op">=</span> generator(latent_space_samples)</span>
+<span id="cb13-58"><a href="#cb13-58" aria-hidden="true" tabindex="-1"></a>        output_discriminator <span class="op">=</span> discriminator(generated_samples)</span>
+<span id="cb13-59"><a href="#cb13-59" aria-hidden="true" tabindex="-1"></a>        output_discriminator_generated <span class="op">=</span> discriminator(generated_samples)</span>
+<span id="cb13-60"><a href="#cb13-60" aria-hidden="true" tabindex="-1"></a>        loss_generator <span class="op">=</span> loss_function(</span>
+<span id="cb13-61"><a href="#cb13-61" aria-hidden="true" tabindex="-1"></a>            output_discriminator_generated, real_samples_labels</span>
+<span id="cb13-62"><a href="#cb13-62" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb13-63"><a href="#cb13-63" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb13-64"><a href="#cb13-64" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Aprox dos lineas para</span></span>
+<span id="cb13-65"><a href="#cb13-65" aria-hidden="true" tabindex="-1"></a>        <span class="co"># llamar al paso backward sobre el loss_generator</span></span>
+<span id="cb13-66"><a href="#cb13-66" aria-hidden="true" tabindex="-1"></a>        <span class="co"># llamar al optimizador sobre optimizer_generator</span></span>
+<span id="cb13-67"><a href="#cb13-67" aria-hidden="true" tabindex="-1"></a>        <span class="co"># YOUR CODE HERE</span></span>
+<span id="cb13-68"><a href="#cb13-68" aria-hidden="true" tabindex="-1"></a>        loss_generator.backward()</span>
+<span id="cb13-69"><a href="#cb13-69" aria-hidden="true" tabindex="-1"></a>        optimizer_generator.step()</span>
+<span id="cb13-70"><a href="#cb13-70" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb13-71"><a href="#cb13-71" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Guardamos las imagenes</span></span>
+<span id="cb13-72"><a href="#cb13-72" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> epoch <span class="op">%</span> <span class="dv">2</span> <span class="op">==</span> <span class="dv">0</span> <span class="kw">and</span> n <span class="op">==</span>  batch_size <span class="op">-</span> <span class="dv">1</span>:</span>
+<span id="cb13-73"><a href="#cb13-73" aria-hidden="true" tabindex="-1"></a>            generated_samples_detached <span class="op">=</span> generated_samples.detach()</span>
+<span id="cb13-74"><a href="#cb13-74" aria-hidden="true" tabindex="-1"></a>            plt.plot(generated_samples_detached[:, <span class="dv">0</span>], generated_samples_detached[:, <span class="dv">1</span>], <span class="st">"."</span>)</span>
+<span id="cb13-75"><a href="#cb13-75" aria-hidden="true" tabindex="-1"></a>            plt.xlabel(<span class="st">"X1"</span>)</span>
+<span id="cb13-76"><a href="#cb13-76" aria-hidden="true" tabindex="-1"></a>            plt.ylabel(<span class="st">"X2"</span>)</span>
+<span id="cb13-77"><a href="#cb13-77" aria-hidden="true" tabindex="-1"></a>            plt.title(<span class="st">"Epoch "</span><span class="op">+</span><span class="bu">str</span>(epoch))</span>
+<span id="cb13-78"><a href="#cb13-78" aria-hidden="true" tabindex="-1"></a>            name <span class="op">=</span> path_imgs <span class="op">+</span> <span class="st">"epoch_"</span><span class="op">+</span><span class="bu">str</span>(epoch)<span class="op">+</span><span class="st">".jpg"</span></span>
+<span id="cb13-79"><a href="#cb13-79" aria-hidden="true" tabindex="-1"></a>            plt.savefig(name, <span class="bu">format</span><span class="op">=</span><span class="st">"jpg"</span>)</span>
+<span id="cb13-80"><a href="#cb13-80" aria-hidden="true" tabindex="-1"></a>            plt.close()</span>
+<span id="cb13-81"><a href="#cb13-81" aria-hidden="true" tabindex="-1"></a>            list_images.append(name)</span>
+<span id="cb13-82"><a href="#cb13-82" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-83"><a href="#cb13-83" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Show loss</span></span>
+<span id="cb13-84"><a href="#cb13-84" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> epoch <span class="op">%</span> <span class="dv">10</span> <span class="op">==</span> <span class="dv">0</span> <span class="kw">and</span> n <span class="op">==</span> batch_size <span class="op">-</span> <span class="dv">1</span>:</span>
+<span id="cb13-85"><a href="#cb13-85" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="ss">f"Epoch: </span><span class="sc">{</span>epoch<span class="sc">}</span><span class="ss"> Loss D.: </span><span class="sc">{</span>loss_discriminator<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb13-86"><a href="#cb13-86" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="ss">f"Epoch: </span><span class="sc">{</span>epoch<span class="sc">}</span><span class="ss"> Loss G.: </span><span class="sc">{</span>loss_generator<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Epoch: 0 Loss D.: 0.22354447841644287
+Epoch: 0 Loss G.: 2.678734064102173
+Epoch: 10 Loss D.: 0.5860480070114136
+Epoch: 10 Loss G.: 1.450437307357788
+Epoch: 20 Loss D.: 0.6584478616714478
+Epoch: 20 Loss G.: 1.0814915895462036
+Epoch: 30 Loss D.: 0.599288284778595
+Epoch: 30 Loss G.: 0.9199510812759399
+Epoch: 40 Loss D.: 0.695662796497345
+Epoch: 40 Loss G.: 0.8953176140785217
+Epoch: 50 Loss D.: 0.6338149309158325
+Epoch: 50 Loss G.: 0.8706021308898926
+Epoch: 60 Loss D.: 0.6710652112960815
+Epoch: 60 Loss G.: 0.8217639923095703
+Epoch: 70 Loss D.: 0.6576623916625977
+Epoch: 70 Loss G.: 0.8216487765312195
+Epoch: 80 Loss D.: 0.6855558753013611
+Epoch: 80 Loss G.: 0.6580367088317871
+Epoch: 90 Loss D.: 0.7043758630752563
+Epoch: 90 Loss G.: 0.6779645681381226</code></pre>
+</div>
+</div>
+<div class="cell" data-executetime="{&quot;end_time&quot;:&quot;2023-08-22T01:14:06.776252Z&quot;,&quot;start_time&quot;:&quot;2023-08-22T01:14:06.765625Z&quot;}" data-execution_count="17">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>new_representation(<span class="fl">0.7</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="17">
+<pre><code>'0x1.6666666666666p-1'</code></pre>
+</div>
+</div>
+<div class="cell" data-executetime="{&quot;end_time&quot;:&quot;2023-08-22T01:14:15.207336Z&quot;,&quot;start_time&quot;:&quot;2023-08-22T01:14:15.189394Z&quot;}" data-nbgrader="{&quot;cell_type&quot;:&quot;code&quot;,&quot;checksum&quot;:&quot;1876d2a5898ac2733d001d55af81c83b&quot;,&quot;grade&quot;:true,&quot;grade_id&quot;:&quot;cell-43271ed91b07bf15&quot;,&quot;locked&quot;:true,&quot;points&quot;:70,&quot;schema_version&quot;:3,&quot;solution&quot;:false,&quot;task&quot;:false}" data-execution_count="18">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> tick.marks(<span class="dv">35</span>):        </span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> compare_numbers(new_representation(loss_generator), <span class="st">"3c3d"</span>, <span class="st">'0x1.bd70a3d70a3d7p-1'</span>)</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> tick.marks(<span class="dv">35</span>):        </span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> compare_numbers(new_representation(loss_discriminator), <span class="st">"3c3d"</span>, <span class="st">'0x1.6666666666666p-1'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+
+        <div class="alert alert-box alert-success">
+        <h1> <!--{id:"CORRECTMARK", marks:"35"}--> 
+         ✓ [35 marks] 
+         </h1> </div>
+</div>
+<div class="cell-output cell-output-display">
+
+        <div class="alert alert-box alert-success">
+        <h1> <!--{id:"CORRECTMARK", marks:"35"}--> 
+         ✓ [35 marks] 
+         </h1> </div>
+</div>
+</div>
+</section>
+<section id="revisión-de-lo-generado" class="level3">
+<h3 class="anchored" data-anchor-id="revisión-de-lo-generado">Revisión de lo Generado</h3>
+<p>Las GAN están diseñadas para generar datos. Por lo tanto, una vez que se haya completado el proceso de entrenamiento, se pueden obtener algunas muestras aleatorias del espacio latente y alimentarlas al generador para obtener algunas muestras generadas.</p>
+<p>Luego se pueden trazar las muestras generadas y verificar si se asemejan a los datos de entrenamiento. Antes de trazar los datos de generated_samples, será necesario utilizar .detach() para obtener un tensor fuera del gráfico computacional de PyTorch, que luego se utilizará para calcular los gradientes:</p>
+<p>Se puede observar que la distribución de los datos generados se asemeja a la de los datos reales. Al utilizar un tensor de muestras de espacio latente fijo y alimentarlo al generador al final de cada época durante el proceso de entrenamiento, se puede visualizar la evolución del entrenamiento:</p>
+<p>Es importante señalar que al comienzo del proceso de entrenamiento, la distribución de los datos generados es muy diferente de la de los datos reales. Sin embargo, a medida que avanza el entrenamiento, el generador aprende la distribución de los datos reales.</p>
+<p>Ahora que se ha realizado la primera implementación de una red generativa adversaria, se pasará a una aplicación más práctica utilizando imágenes en la parte 2.</p>
+<div class="cell" data-executetime="{&quot;end_time&quot;:&quot;2023-08-22T01:05:46.151620Z&quot;,&quot;start_time&quot;:&quot;2023-08-22T01:05:46.136631Z&quot;}" data-nbgrader="{&quot;cell_type&quot;:&quot;code&quot;,&quot;checksum&quot;:&quot;5206dfbaaed23fedda75a98235a5a05a&quot;,&quot;grade&quot;:false,&quot;grade_id&quot;:&quot;cell-9550386d10b7ff02&quot;,&quot;locked&quot;:true,&quot;schema_version&quot;:3,&quot;solution&quot;:false,&quot;task&quot;:false}" data-execution_count="19">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>latent_space_samples <span class="op">=</span> torch.randn(<span class="dv">100</span>, <span class="dv">2</span>)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>generated_samples <span class="op">=</span> generator(latent_space_samples)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-executetime="{&quot;end_time&quot;:&quot;2023-08-22T01:17:27.195854Z&quot;,&quot;start_time&quot;:&quot;2023-08-22T01:17:27.178827Z&quot;}" data-nbgrader="{&quot;cell_type&quot;:&quot;code&quot;,&quot;checksum&quot;:&quot;9c049857dcd843ef11c3fffd112388c5&quot;,&quot;grade&quot;:true,&quot;grade_id&quot;:&quot;cell-d5c4c4e3c6b03baa&quot;,&quot;locked&quot;:true,&quot;points&quot;:30,&quot;schema_version&quot;:3,&quot;solution&quot;:false,&quot;task&quot;:false}" data-execution_count="20">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> tick.marks(<span class="dv">15</span>):        </span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> compare_numbers(new_representation(generated_samples[<span class="bu">len</span>(generated_samples)<span class="op">-</span><span class="dv">1</span>][<span class="dv">0</span>]), <span class="st">"3c3d"</span>, <span class="st">'0x1.6000000000000p+2'</span>)</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> tick.marks(<span class="dv">15</span>):        </span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> compare_numbers(new_representation(generated_samples[<span class="bu">len</span>(generated_samples)<span class="op">-</span><span class="dv">1</span>][<span class="dv">1</span>]), <span class="st">"3c3d"</span>, <span class="st">'0x1.6000000000000p+2'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+
+        <div class="alert alert-box alert-success">
+        <h1> <!--{id:"CORRECTMARK", marks:"15"}--> 
+         ✓ [15 marks] 
+         </h1> </div>
+</div>
+<div class="cell-output cell-output-display">
+
+        <div class="alert alert-box alert-success">
+        <h1> <!--{id:"CORRECTMARK", marks:"15"}--> 
+         ✓ [15 marks] 
+         </h1> </div>
+</div>
+</div>
+<div class="cell" data-executetime="{&quot;end_time&quot;:&quot;2023-08-22T01:05:46.386400Z&quot;,&quot;start_time&quot;:&quot;2023-08-22T01:05:46.168619Z&quot;}" data-nbgrader="{&quot;cell_type&quot;:&quot;code&quot;,&quot;checksum&quot;:&quot;082d622cfd145fa4df612dfb3f435b72&quot;,&quot;grade&quot;:false,&quot;grade_id&quot;:&quot;cell-6826fa4e5e1b1e94&quot;,&quot;locked&quot;:true,&quot;schema_version&quot;:3,&quot;solution&quot;:false,&quot;task&quot;:false}" data-execution_count="21">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>generated_samples <span class="op">=</span> generated_samples.detach()</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>plt.plot(generated_samples[:, <span class="dv">0</span>], generated_samples[:, <span class="dv">1</span>], <span class="st">"."</span>)</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"X1"</span>)</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"X2"</span>)</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Final Plot"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="21">
+<pre><code>Text(0.5, 1.0, 'Final Plot')</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="Lab6P1_files/figure-html/cell-19-output-2.png" class="img-fluid"></p>
+</div>
+</div>
+<div class="cell" data-executetime="{&quot;end_time&quot;:&quot;2023-08-22T01:05:47.811714Z&quot;,&quot;start_time&quot;:&quot;2023-08-22T01:05:46.387907Z&quot;}" data-nbgrader="{&quot;cell_type&quot;:&quot;code&quot;,&quot;checksum&quot;:&quot;93006e15e08c6a8fec71364ce4e90ec0&quot;,&quot;grade&quot;:false,&quot;grade_id&quot;:&quot;cell-64f5584694f2c558&quot;,&quot;locked&quot;:true,&quot;schema_version&quot;:3,&quot;solution&quot;:false,&quot;task&quot;:false}" data-execution_count="22">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualización del progreso de entrenamiento</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Para que esto se ve bien, por favor reinicien el kernel y corran todo el notebook</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> PIL <span class="im">import</span> Image</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> IPython.display <span class="im">import</span> display, Image <span class="im">as</span> IPImage</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>images <span class="op">=</span> [Image.<span class="bu">open</span>(path) <span class="cf">for</span> path <span class="kw">in</span> list_images]</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Save the images as an animated GIF</span></span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>gif_path <span class="op">=</span> <span class="st">"animation.gif"</span>  <span class="co"># Specify the path for the GIF file</span></span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>images[<span class="dv">0</span>].save(gif_path, save_all<span class="op">=</span><span class="va">True</span>, append_images<span class="op">=</span>images[<span class="dv">1</span>:], loop<span class="op">=</span><span class="dv">0</span>, duration<span class="op">=</span><span class="dv">300</span>)</span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>display(IPImage(filename<span class="op">=</span>gif_path))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<pre><code>&lt;IPython.core.display.Image object&gt;</code></pre>
+</div>
+</div>
+<p><strong>PREGUNTAS:</strong> * Describa en una frase la diferencia entre los modelos discriminativos y los generativos - Los modelos discriminativos aprenden la frontera de decisión entre clases mientras que los modelos generativos aprenden la distribución de datos de las clases. * Explique como el concepto de MinMax se aplica a los GAN - MinMax se aplica a las GAN’s cuando el generador intenta maximizar la probabilidad de que el discriminador cometa un error y el discriminador intenta minimizar la probabilidad de que cometa un error. * Describa lo que se está observando en la imagen GIF que se generó - En el GIF se observa como el generador va aprendiendo, pasando de una grafica que con los puntos completamente dispersos a una con forma senoidal. * ¿Cree que se ha creado un buen modelo? ¿Por qué? - Al observar el plot de la ultima epoca se puede ver que el generador aprendio la distribucion de los datos reales. De igual manera observar el GIF se puede ver que el generador va aprendiendo a medida que pasan las epocas, por lo que se puede decir que si se creo un buen modelo.</p>
+<div class="cell" data-executetime="{&quot;end_time&quot;:&quot;2023-08-22T01:05:47.827200Z&quot;,&quot;start_time&quot;:&quot;2023-08-22T01:05:47.813706Z&quot;}" data-nbgrader="{&quot;cell_type&quot;:&quot;code&quot;,&quot;checksum&quot;:&quot;3a278e529c2dc267965b339a9df5b702&quot;,&quot;grade&quot;:true,&quot;grade_id&quot;:&quot;cell-9dc291ab56b45d7a&quot;,&quot;locked&quot;:true,&quot;points&quot;:0,&quot;schema_version&quot;:3,&quot;solution&quot;:false,&quot;task&quot;:false}" data-execution_count="23">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>()</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"La fraccion de abajo muestra su rendimiento basado en las partes visibles de este laboratorio"</span>)</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>tick.summarise_marks() <span class="co"># </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+La fraccion de abajo muestra su rendimiento basado en las partes visibles de este laboratorio</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<!--{id:"TOTALMARK",marks:"100", available:"100"}  -->
+        
+        <h1> 100 / 100 marks (100.0%) </h1>
+        
+</div>
+</div>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
